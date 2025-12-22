@@ -1,0 +1,144 @@
+spring:
+  application:
+    name: ai-summary-service
+  
+  # 資料庫配置
+  datasource:
+    # 更新連接字串以完美支援 utf8mb4 和 Emoji
+    url: ${DB_URL:jdbc:mysql://localhost:3306/aipoint?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: HikariPool-Summary
+  
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        # 移除已過時的 MySQL8Dialect，讓 Spring Boot 自動選擇最新的
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # 文件上傳配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
+      location: ${FILE_UPLOAD_DIR:./uploads}
+  
+  # Jackson 配置
+  jackson:
+    time-zone: Asia/Taipei
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+
+# 伺服器配置
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+# Groq API 配置
+groq:
+  # 加入預設值防止啟動報錯
+  api-key: ${GROQ_API_KEY:}
+  base-url: https://api.groq.com/openai/v1
+  model: openai/gpt-oss-120b
+  max-tokens:
+    short: 1024
+    medium: 2048
+    long: 4096
+  max-completion-tokens: 8192
+  temperature: 1
+  top-p: 1
+  reasoning-effort: medium
+  stream: true
+  timeout: 60000
+
+# 文件處理配置
+file:
+  upload-dir: ${FILE_UPLOAD_DIR:./uploads}
+  max-size: 10485760  # 10MB in bytes
+  allowed-extensions: pdf,doc,docx
+  allowed-mime-types: application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+# 網頁爬取配置
+web-scraper:
+  timeout: 10000
+  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+  max-content-length: 50000
+  follow-redirects: true
+  ignore-http-errors: false
+
+# 日誌配置
+logging:
+  level:
+    root: INFO
+    com.aipoint.summary: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: logs/application.log
+    max-size: 10MB
+    max-history: 30
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+
+# SpringDoc OpenAPI 配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+  show-actuator: true

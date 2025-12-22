@@ -1,0 +1,51 @@
+# AIpoint Project Root Git Ignore
+
+# Secrets & Environment Variables
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.example
+backend/src/main/resources/application-local.yml
+frontend/.env
+frontend/.env.development
+frontend/.env.production
+frontend/.env.example
+.env.example
+
+# Dependencies
+node_modules/
+backend/target/
+frontend/dist/
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# Logs
+logs/
+*.log
+backend/logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build Artifacts
+*.jar
+*.war
+*.ear
+
+# Temp files
+tmp/
+temp/

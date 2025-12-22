@@ -1,0 +1,33 @@
+# 開發環境配置
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+logging:
+  level:
+    root: DEBUG
+    com.aipoint.summary: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+groq:
+  timeout: 60000  # 開發環境延長超時時間
+
+# 開發環境允許詳細錯誤訊息
+server:
+  error:
+    include-stacktrace: always
+    include-exception: true
