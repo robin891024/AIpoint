@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/github-dark.css'
 import './App.css'
 
 function App() {
@@ -14,7 +17,6 @@ function App() {
   // 檢查後端連接
   const checkBackend = async () => {
     try {
-      // 加上 cache: 'no-store' 確保不會抓到舊的快取結果
       const response = await fetch('http://localhost:8080/api/health', { cache: 'no-store' })
       if (response.ok) {
         setBackendStatus('up')
@@ -39,11 +41,9 @@ function App() {
   }
 
   useEffect(() => {
-    // 立即檢查一次
     checkBackend()
     fetchHistory()
     
-    // 每 5 秒檢查一次（開發階段縮短時間，方便測試自動恢復）
     const interval = setInterval(() => {
       checkBackend()
     }, 5000)
@@ -54,14 +54,11 @@ function App() {
   const handleDeleteHistory = async (id, e) => {
     e.stopPropagation()
     try {
-      // 找出要刪除的那筆紀錄
       const itemToDelete = history.find(item => item.id === id)
-      
       const response = await fetch(`http://localhost:8080/api/summary/history/${id}`, {
         method: 'DELETE'
       })
       if (response.ok) {
-        // 如果當前顯示的結果正是這筆被刪除的內容，則清空顯示區域
         if (summaryResult === itemToDelete?.summaryText) {
           setSummaryResult(null)
         }
@@ -77,7 +74,7 @@ function App() {
     
     setIsSummarizing(true)
     setSummaryResult(null)
-    setShowHistory(false) // 自動切換回「摘要結果」視圖
+    setShowHistory(false)
     
     try {
       const response = await fetch('http://localhost:8080/api/summary/text', {
@@ -92,7 +89,7 @@ function App() {
       
       if (response.ok) {
         setSummaryResult(data.summary)
-        fetchHistory() // 重新獲取歷史紀錄
+        fetchHistory()
       } else {
         setSummaryResult(`❌ 錯誤: ${data.error || '摘要生成失敗'}`)
       }
@@ -118,7 +115,7 @@ function App() {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col font-display">
+    <div className="relative flex min-h-screen w-full flex-col font-display transition-colors duration-300">
       {/* Header */}
       <header className="flex items-center justify-between px-6 lg:px-12 py-6 w-full z-10">
         <div className="flex items-center gap-3">
@@ -267,14 +264,14 @@ function App() {
           {/* Output Header */}
           <div className="flex items-center justify-between h-12">
             <div className="flex gap-4">
-              <button
+              <button 
                 onClick={() => setShowHistory(false)}
                 className={`text-lg font-bold px-2 flex items-center gap-2 transition-colors ${!showHistory ? 'text-primary' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 <span className="material-symbols-outlined">stars</span>
                 摘要結果
               </button>
-              <button
+              <button 
                 onClick={() => {
                   setShowHistory(true)
                   fetchHistory()
@@ -286,7 +283,7 @@ function App() {
               </button>
             </div>
             <div className="flex gap-2">
-              <button
+              <button 
                 disabled={!summaryResult || showHistory}
                 className={`flex items-center justify-center size-9 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 transition-all ${
                   summaryResult ? 'text-slate-400 hover:text-primary hover:border-primary/30' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
@@ -296,7 +293,7 @@ function App() {
                 <span className="material-symbols-outlined text-[18px]">content_copy</span>
               </button>
               <button 
-                disabled={!summaryResult}
+                disabled={!summaryResult || showHistory}
                 className={`flex items-center justify-center size-9 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 transition-all ${
                   summaryResult ? 'text-slate-400 hover:text-primary hover:border-primary/30' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
                 }`} 
@@ -319,9 +316,9 @@ function App() {
                 <div className="flex-1 flex flex-col items-center justify-center text-center relative z-10">
                   <div className="relative flex flex-col items-center gap-4 max-w-[280px]">
                     <div className="size-32 bg-slate-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-2 overflow-hidden">
-                      <img
-                        alt="Preparing"
-                        className="w-full h-full object-cover opacity-60 dark:opacity-40"
+                      <img 
+                        alt="Preparing" 
+                        className="w-full h-full object-cover opacity-60 dark:opacity-40" 
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdwICt4fRuCeUusUscTsmw5GKYbkIywuLZfctZHmw4D6xLOzs1c85CsdbskjwxhvDPvDfV9poYXcNh-lGONNTrg_YjytFz3jlVtwRdYQo6S1eLI33f_s_Q-s_2C66Zb5S64Vxd-yu7fVEzQC8db11b-ZkwJr9RqcZ5-N50L00yFD2x9V7ylx9kX2-F1tARpr1wGOWuMDoI67xdn1OlyB0d70eXaW4pfnZ7LcILqwn4nrlE4VwZxyL1V2SeQZsV5TV8yWcZN-JXQfU"
                       />
                     </div>
@@ -335,7 +332,26 @@ function App() {
                 /* Summary Content */
                 <div className="relative z-10 w-full h-full animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
                   <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-200 leading-relaxed">
-                    <ReactMarkdown>{summaryResult}</ReactMarkdown>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeHighlight]}
+                      components={{
+                        code: ({node, inline, className, children, ...props}) => {
+                          const match = /language-(\w+)/.exec(className || '')
+                          return !inline ? (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          ) : (
+                            <code className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-sm" {...props}>
+                              {children}
+                            </code>
+                          )
+                        }
+                      }}
+                    >
+                      {summaryResult}
+                    </ReactMarkdown>
                   </div>
                 </div>
               )
@@ -349,7 +365,7 @@ function App() {
                   </div>
                 ) : (
                   history.map((item) => (
-                    <div
+                    <div 
                       key={item.id}
                       onClick={() => {
                         setSummaryResult(item.summaryText)
@@ -368,7 +384,7 @@ function App() {
                       <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
                         {item.summaryText.replace(/[#*]/g, '')}
                       </p>
-                      <button
+                      <button 
                         onClick={(e) => handleDeleteHistory(item.id, e)}
                         className="absolute top-2 right-2 p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                       >

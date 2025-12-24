@@ -1,144 +1,169 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: white;
+/* Custom scrollbar for textareas */
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+textarea::-webkit-scrollbar-track {
+    background: transparent; 
+}
+textarea::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0; 
+    border-radius: 20px;
+}
+.dark textarea::-webkit-scrollbar-thumb {
+    background-color: #334155; 
 }
 
-h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+/* Line clamp utility if not using tailwind plugin */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
-.subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+/* Prose overrides for better readability in the summary box */
+.prose {
+  max-width: none;
 }
 
-.status-card,
-.info-card,
-.tech-stack {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 2rem;
-  margin: 1rem 0;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+.prose p {
+  margin-bottom: 1em;
 }
 
-.status-card h2,
-.info-card h3,
-.tech-stack h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
+.prose h1, .prose h2, .prose h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
 }
 
-.status-card p {
-  font-size: 1.1rem;
-  margin: 1rem 0;
+.prose ul, .prose ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
 }
 
-.check-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid white;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+.prose li {
+  margin-bottom: 0.5em;
 }
 
-.check-button:hover {
-  background: white;
-  color: #667eea;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+/* Code block styling */
+.prose pre {
+  background-color: #1e293b;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1em 0;
 }
 
-.info-card ul {
-  list-style: none;
+.dark .prose pre {
+  background-color: #0f172a;
+}
+
+.prose code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+.prose pre code {
+  background-color: transparent;
   padding: 0;
+  border-radius: 0;
+  color: #e2e8f0;
+}
+
+.prose :not(pre) > code {
+  background-color: #f1f5f9;
+  color: #e11d48;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.dark .prose :not(pre) > code {
+  background-color: #334155;
+  color: #fca5a5;
+}
+
+/* Blockquote styling */
+.prose blockquote {
+  border-left: 4px solid #2b8cee;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #64748b;
+}
+
+.dark .prose blockquote {
+  color: #94a3b8;
+}
+
+/* Table styling */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5em;
   text-align: left;
 }
 
-.info-card li {
-  padding: 0.5rem 0;
-  font-size: 1.1rem;
+.dark .prose th,
+.dark .prose td {
+  border-color: #334155;
 }
 
-.tech-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
+.prose th {
+  background-color: #f8fafc;
+  font-weight: bold;
 }
 
-.badge {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.dark .prose th {
+  background-color: #1e293b;
 }
 
-.links {
-  display: flex;
-  gap: 1rem;
-  margin: 2rem 0;
-  flex-wrap: wrap;
-  justify-content: center;
+/* Strong and emphasis */
+.prose strong {
+  font-weight: 700;
+  color: #0f172a;
 }
 
-.links a {
-  color: white;
-  text-decoration: none;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+.dark .prose strong {
+  color: #f1f5f9;
 }
 
-.links a:hover {
-  background: white;
-  color: #667eea;
-  transform: translateY(-2px);
+.prose em {
+  font-style: italic;
 }
 
-.footer {
-  margin-top: 2rem;
-  opacity: 0.8;
-  font-size: 0.9rem;
+/* Links */
+.prose a {
+  color: #2b8cee;
+  text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
+.prose a:hover {
+  color: #1e6bb8;
+}
 
-  .subtitle {
-    font-size: 1rem;
-  }
+.dark .prose a:hover {
+  color: #60a5fa;
+}
 
-  .status-card,
-  .info-card,
-  .tech-stack {
-    padding: 1.5rem;
-  }
+/* Horizontal rule */
+.prose hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 2em 0;
+}
+
+.dark .prose hr {
+  border-top-color: #334155;
 }

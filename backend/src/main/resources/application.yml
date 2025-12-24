@@ -66,8 +66,9 @@ server:
 
 # Groq API 配置
 groq:
-  # 加入預設值防止啟動報錯
-  api-key: ${GROQ_API_KEY:}
+  # 請在此處填入你的 Groq API Key（本地開發用，不要提交到 Git）
+  # 或使用啟動參數: mvn spring-boot:run -Dspring-boot.run.arguments="--groq.api-key=YOUR_KEY"
+  api-key: ${GROQ_API_KEY:your-api-key-here}
   base-url: https://api.groq.com/openai/v1
   model: openai/gpt-oss-120b
   max-tokens:
