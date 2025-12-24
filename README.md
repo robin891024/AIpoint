@@ -17,3 +17,5 @@
 - 自動儲存所有摘要記錄
 - 支援篩選和搜尋
 - 查看詳細資訊
+
+<img width="1898" height="873" alt="image" src="https://github.com/user-attachments/assets/5d1a7e2c-ce73-482c-8806-a8a23bd79618" />
